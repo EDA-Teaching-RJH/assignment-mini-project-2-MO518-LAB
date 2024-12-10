@@ -1,72 +1,51 @@
-class Book:
-    def __init__(self, title, author, year, available=True):
-        self.title = title
-        self.author = author
-        self.year = year
-        self.available = available
-    
-    def borrow(self):
-        if self.available:
-            self.available = False
-            print(f"You have borrowed '{self.title}' by {self.author}.")
-        else:
-            print(f"'{self.title}' is currently not available.")
-
-    def return_book(self):
-        self.available = True
-        print(f"'{self.title}' has been returned and is now available.")
-
-    def __str__(self, name):
-        return f"'{self.title}' by {self.author} ({self.year}) - {'Available' if self.available else 'Not Available'}"
-    
-class Library:
-    def __init__(self, name):
+class Student:
+    def __init__(self, name, student_id, grades):
         self.name = name
-        self.books = []
-    def add_book(self, book):
-        self.books.append(book)
-        print(f"'{book.title}' has been added to the library.")
+        self.student_id = student_id
+        self.grades = grades
+    
+    def calculate_average(self):
+        if not self.grades:
+            return 0
+        return sum(self.grades) / len(self.grades)
 
-    def list_books(self):
-        if not self.books:
-            print("No books in the library.")
+    def has_passed(self, passing_grade):
+        return self.calculate_average() >= passing_grade
+
+
+class University:
+    def __init__(self, name, passing_grade):
+        self.name = name
+        self.passing_grade = passing_grade
+        self.students = []
+
+    def add_student(self, student):
+        if isinstance(student, Student):
+            self.students.append(student)
         else:
-            for book in self.books:
-                print(book)
+            raise TypeError("Only objects of type 'Student' can be added.")
 
-    def find_book(self, title):
-        for book in self.books:
-            if book.title.lower() == title.lower():
-                return book
-        print(f"Book titled '{title}' not found in the library.")
-        return None
+# Example usage
+if __name__ == "__main__":
+    # Create some students
+    student1 = Student("Michael", 24015708, [78, 89, 85])
+    student2 = Student("Damilola", 23042781, [60, 65, 58])
+    student3 = Student("Samuel", 25679032, [95, 92, 88])
 
-library = Library("City Library")
+    # Create a university
+    university = University("Tech University", passing_grade=70)
 
-# Adding books
-book1 = Book("1984", "George Orwell", 1949)
-book2 = Book("To Kill a Mockingbird", "Harper Lee", 1960)
-book3 = Book("The Great Gatsby", "F. Scott Fitzgerald", 1925)
+    # Add students to the university
+    university.add_student(student1)
+    university.add_student(student2)
+    university.add_student(student3)
 
-library.add_book(book1)
-library.add_book(book2)
-library.add_book(book3)
-
-# Listing books
-print("\nBooks in the library:")
-library.list_books()
-
-# Borrowing a book
-print("\nBorrowing a book:")
-book_to_borrow = library.find_book("1984")
-if book_to_borrow:
-    book_to_borrow.borrow()
-
-# Returning a book
-print("\nReturning a book:")
-book_to_borrow.return_book()
-
-# Listing books after borrowing and returning
-print("\nBooks in the library after updates:")
-library.list_books()
-
+    def list_students(self):
+        return [student.name for student in self.students]
+       
+    def get_passed_students(self):
+        return [
+            student.name
+            for student in self.students
+            if isinstance(student, Student) and student.has_passed(self.passing_grade)
+        ]
